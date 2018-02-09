@@ -12,8 +12,9 @@
   <div id="app">
     <div class="content">
       <article class="article">
-        <span v-for="(n,index) in num" :class="[{'no-border': index%20==19},{avtive:active===index}]" @click="clickHandler(index)"></span>
-        <pre class="cursor" @click="clickCursor" :style="styleObj"></pre>
+        <span v-for="(n,index) in num" :class="[{'no-border': index%20==19},{avtive:active===index}]" @click="clickHandler(index)">{{n}}</span>
+        <pre class="cursor" @click="clickCursor" :style="styleObj">
+        </pre>
         <input type="text" @blur="onBlurChange" tabindex="-1" id="input" v-model="value">
         {{value}}
       </article>
@@ -25,7 +26,7 @@
       el: '#app',
       data: {
         line: 5,
-        num: 200,
+        num: new Array(200),
         active: 0,
         value: '',
       },
@@ -37,21 +38,46 @@
           let t = Math.floor(this.active/20)
           return {
             left: (this.active % 20)*29-1 + 'px',
-            top: t * 29 + (t+1)*10 + 'px'
+            top: t * 29 + (t+1)*10 + 'px',
+            borderColor: 'red'
           }
         }
+      },
+      watch: {
+        value (n, o) {
+          if(n!=='' && n!==undefined){
+            let narr = [...n]
+            for (let i = 0; i < narr.length; i++) {
+              this.num[this.active + i] = narr[i]
+            }
+            this.active += narr.length
+            this.value = ''
+          }
+        }
+      },
+      mounted () {
+        document.getElementById('input').addEventListener('keyup', (e) => {
+          // console.log(e)
+          if(e.code === 'Backspace' && this.active>0){
+            this.num[this.active] = ''
+            this.active --
+          }else if(e.code === 'Backspace' && this.active==0){
+            alert(this.active)
+            this.num[0] = ''
+          }
+          e.preventDefault()
+        })
       },
       methods: {
         clickHandler (index) {
           this.active = index
           document.getElementById('input').focus()
-          console.log(document.activeElement.id)
         },
         clickCursor () {
           document.getElementById('input').focus()
         },
         onBlurChange (e) {
-
+          // console.log(e)
         }
       }
     })
