@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="../css/normalize.css">
+  <link rel="stylesheet" href="../css/paper.css">
+</head>
+<body>
+  <div id="app">
+    <div class="content">
+      <article class="article">
+        <span v-for="(n,index) in num" :class="[{'no-border': index%20==19},{avtive:active===index}]" @click="clickHandler(index)"></span>
+        <pre class="cursor" @click="clickCursor" :style="styleObj"></pre>
+        <input type="text" @blur="onBlurChange" tabindex="-1" id="input" v-model="value">
+        {{value}}
+      </article>
+    </div>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script>
+    new Vue({
+      el: '#app',
+      data: {
+        line: 5,
+        num: 200,
+        active: 0,
+        value: '',
+      },
+      created () {
+
+      },
+      computed: {
+        styleObj(){
+          let t = Math.floor(this.active/20)
+          return {
+            left: (this.active % 20)*29-1 + 'px',
+            top: t * 29 + (t+1)*10 + 'px'
+          }
+        }
+      },
+      methods: {
+        clickHandler (index) {
+          this.active = index
+          document.getElementById('input').focus()
+          console.log(document.activeElement.id)
+        },
+        clickCursor () {
+          document.getElementById('input').focus()
+        },
+        onBlurChange (e) {
+
+        }
+      }
+    })
+  </script>
+</body>
+</html>
